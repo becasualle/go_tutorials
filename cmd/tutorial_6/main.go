@@ -17,10 +17,35 @@ func (e gasEngine) kmsLeft() uint8 { // (e gasEngine) — определяет �
 	return e.liter * e.kmpl // имеет доступ к полям и другим методам, как `this`
 }
 
+type electricEngine struct {
+	kmpkwh uint8
+	kwh    uint8
+}
+
+func (e electricEngine) kmsLeft() uint8 {
+	return e.kmpkwh * e.kwh
+}
+
+type engine interface {
+	kmsLeft() uint8
+}
+
+func canMakeIt(e engine, kms uint8) {
+
+	if e.kmsLeft() >= kms {
+		fmt.Println("Вы доедете")
+	} else {
+		fmt.Println("Вам не хватает топлива")
+	}
+}
+
 func main() {
-	var myEngine gasEngine = gasEngine{10, 5, owner{name: "all"}} //struct literal syntax
-	myEngine.kmpl = 12
-	fmt.Println(myEngine.kmpl, myEngine.liter, myEngine.ownerInfo)
+	var myGasEngine gasEngine = gasEngine{10, 5, owner{name: "all"}} //struct literal syntax
+	myGasEngine.kmpl = 12
+	canMakeIt(myGasEngine, 60)
+
+	myElectricEngine := electricEngine{20, 5}
+	canMakeIt(myElectricEngine, 101)
 
 	// anonymus struct without defining type:
 	var myEngine2 = struct {
@@ -28,7 +53,5 @@ func main() {
 		liter uint8
 	}{15, 7}
 	fmt.Println(myEngine2)
-
-	fmt.Println(myEngine.kmsLeft())
 
 }
